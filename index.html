@@ -1,0 +1,1446 @@
+<html lang="en">
+  <head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>HOMIE Demo Page</title>
+    <meta name="description" content="Human-object Centric Video Personalization via Multimodal Cognition Enhancement">
+    <meta name="keywords" content="Video generation, Diffusion model">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#EDE8F5">
+    <meta property="og:image" content="">
+    <link rel="stylesheet" href="./assets/index.css">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css'>
+    <link rel="shortcut icon" href="./assets/icon.png" type="image/x-icon">
+    <style>
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-stretch: 100%;
+            font-display: block;
+            font-weight: 300 700;
+            src: url('./assets/roboto.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        @font-face {
+          font-family: 'DancingScript';
+          src: url('./assets/DancingScript-Bold.ttf') format('truetype');
+        }
+
+        @font-face {
+          font-family: 'Caveat';
+          src: url('./assets/Caveat-Medium.ttf') format('truetype');
+        }
+
+        @font-face {
+          font-family: 'Alegreya';
+          src: url('./assets/Alegreya-Regular.ttf') format('truetype');
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        video {
+            background-color: #000000;
+            aspect-ratio: 16 / 9;
+        }
+
+        section.portrait video {
+            background-color: #000000;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        section.multi_ip video {
+            background-color: #000000;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+        }
+
+        section.portrait .prompt-wrap.full-screen-wrap video {
+            object-fit: cover;
+        }
+
+        section.portrait .flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        section.portrait2 .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        section.portrait .flex > div {
+            flex: 0 0 calc((100% - 5 * 10px) / 6);
+        }
+        section.portrait2 .flex > div {
+            flex: 0 0 calc((100% - 1 * 10px) / 2);
+        }
+
+        section.portrait .prompt {
+            font-size: 10px;
+        }
+        section.portrait2 .prompt {
+            font-size: 12px;
+        }
+
+        section.portrait .flex-row {
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        section.portrait2 .flex-row {
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            section.portrait .flex > div {
+                flex: 0 0 calc((100% - 1 * 10px) / 2);
+            }
+        }
+
+        @media (max-width: 768px) {
+            section.portrait2 .flex > div {
+                flex: 0 0 calc((100% - 0 * 10px) / 1);
+            }
+        }
+
+        /* Ensure prompt adjusts for portrait mode */
+        .portrait .prompt {
+            position: absolute;  /* Allow positioning relative to the container */
+            bottom: 5%;          /* Adjust this to control the vertical placement of the prompt */
+            left: 50%;           /* Center horizontally */
+            transform: translateX(-50%); /* Offset by 50% of its width to truly center */
+            max-width: 80%;
+            text-align: center;  /* Center the text inside the prompt */
+            color: white;        /* Optional, if you want the text to stand out */
+            font-size: 1.2em;    /* Optional, adjust the text size */
+        }
+
+        .portrait2 .prompt{
+            position: absolute;  /* Allow positioning relative to the container */
+            bottom: 5%;          /* Adjust this to control the vertical placement of the prompt */
+            left: 50%;           /* Center horizontally */
+            transform: translateX(-50%); /* Offset by 50% of its width to truly center */
+            max-width: 80%;
+            text-align: center;  /* Center the text inside the prompt */
+            color: white;        /* Optional, if you want the text to stand out */
+            font-size: 1.2em;    /* Optional, adjust the text size */
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: "Roboto", sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        #intro {
+            padding: 250px 0 80px 0;
+            justify-content: center;
+            text-align: center;
+            background: transparent;  /*  */
+            color: #ffffff; /*  */
+            position: relative;
+            height: 100vh;  /*  */
+            width: 100%;    /*  */
+        }
+
+        #background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /*  */
+            z-index: -1; /**/
+            filter: brightness(0.3); /*  */
+        }
+
+        #intro h1 {
+            font-size: 90px;
+            font-weight: 300;
+            margin: 20px 0;
+        } 
+
+        #intro h2 {
+            margin: 20px 0 40px 0;
+            font-weight: 300;
+            color: #ffffff
+        }
+
+        #intro h2 strong {
+            color: #fff;
+        }
+
+        .authors {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 25px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .author-block {
+            display: inline-block;
+            margin: 0 10px 0 10px;
+        }
+
+        .author-block a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .author-block a:hover {
+            color: #fff;
+        }
+
+        .author-affiliation {
+            font-size: 16px;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 60px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .author-affiliation .author-block {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        section {
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .content {
+            padding: 0 10%;
+        }
+
+        .button {
+            background-color: #ccc;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background-color 0.5s;
+            text-decoration: none;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .button:hover {
+            background-color: #fff;
+        }
+
+        .bibtex-section {
+            background-color: #111;
+            padding: 40px 10%;
+            text-align: center;
+            margin-top: 60px;
+            color: #ccc;
+        }
+
+        .bibtex-section h3 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .bibtex-code {
+            background-color: #222;
+            color: #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            display: inline-block;
+            font-family: monospace;
+            max-width: 800px;
+            overflow-x: auto;
+        }
+
+        section {
+            margin-top: 100px;
+        }
+        section:first-of-type {
+            margin-top: 0;
+        }
+
+        .title {
+            background-color: #000;
+            position: sticky;
+            top: 0;
+            padding: 20px 10%;
+            font-size: 20px;
+            font-weight: 600;
+            z-index: 1000;
+            min-height: 60px;
+            box-sizing: border-box;
+        }
+
+        .description {
+            padding: 0 10% 20px 10%;
+            color: #fff;
+            line-height: 25px;
+            font-weight: 300;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .flex-row {
+            display: flex;
+            column-gap: 5px;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            padding: 0 5px 5px 5px;
+            
+        }
+
+        .flex-row > div {
+            flex-grow: 1;
+            flex-basis: 0;
+            position: relative;
+        }
+
+        .flex > div {
+            width: calc(100% / 3 - 5px * 2 / 3);
+            margin-top: 2.5px;
+            margin-bottom: 2.5px;
+            position: relative;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+
+        .prompt-wrap {
+            position: relative;
+        }
+
+        .flex-2 {
+            justify-content: center;
+            column-gap: 5px;
+        }
+        .flex-2 > div {
+            width: calc(100% / 2 - 5px / 2);
+            min-width: calc(100% / 3 - 5px * 2 / 3);
+            max-width: calc(100vh - 200px);
+        }
+
+        video, img {
+            width: 100%;
+        }
+
+        .loading-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .loading-text {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .loading-icon {
+            font-size: 48px;
+        }
+
+        .prompt {
+            max-width: calc(100% - 20px);
+            position: absolute;
+            background: rgba(0,0,0,0.5);
+            color: rgba(255,255,255,0.9);
+            font-size: 10px;
+            backdrop-filter: blur(10px);
+            bottom: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            box-sizing: border-box;
+        }
+
+        .flex-very-compact .full-screen-button {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            border-radius: 0;
+        }
+
+        .chinese {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: bold;
+            color: #d18585;
+            font-size: 1.1em;
+        }
+
+        @media (hover: hover) {
+            .prompt-wrap:hover .prompt,
+            .full-screen-wrap:hover .full-screen-button {
+                opacity: 1;
+                pointer-events: all;
+            }
+            #contributors a:hover {
+                background-color: #222;
+            }
+        }
+
+        @media (hover: none) {
+            #contributors a {
+                pointer-events: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .flex-dynamic > div {
+                width: calc(100% / 2 - 5px / 2);
+            }
+        }
+
+        @media (max-width: 640px) {
+            #intro h1 {
+                font-size: 50px;
+            }
+            #intro h2 {
+                font-size: 20px;
+            }
+            .ruler {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 512px) {
+            .flex-dynamic > div,
+            .flex-dynamic-1 > div {
+                width: 100%;
+            }
+
+            .content {
+                padding: 0 12px;
+            }
+
+            .description {
+                padding: 0 12px 20px 12px;
+            }
+
+            .title {
+                padding: 20px 12px;
+            }
+
+            .ruler-tight {
+                font-size: 6px;
+                column-gap: 0;
+            }
+
+            .title-long {
+                font-size: 16px;
+            }
+
+        }
+
+        .margin-top {
+            margin-top: 50px;
+        }
+
+        .ruler {
+            text-align: center;
+            position: sticky;
+            top: 60px;
+            z-index: 999;
+            background-color: #000;
+            color: #999;
+            padding: 5px 0;
+        }
+
+        .ruler > div {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .selected {
+            box-shadow: 0 0 0 5px #fff;
+        }
+
+        #title-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        #title-icon {
+          height: 8em;
+          width: auto;
+          margin-right: 0px;
+          vertical-align: middle;
+        }
+
+        .title-art {
+          font-family: 'Alegreya', sans-serif;
+        }
+
+        .title-art2 {
+          font-family: 'Alegreya', sans-serif;
+        }
+
+        .title-art3 {
+          font-family: 'Alegreya', sans-serif;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: rgb(255, 255, 255);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        #video-wrapper {
+          border-radius: 50px;
+          max-width: 720px;
+          padding-bottom: 40%; 
+          margin: 0 auto;
+          background: #000000;
+        }
+
+        .ethics-section {
+            padding: 100px 10%;
+            text-align: center;
+            margin-top: 60px;
+            color: #ccc;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .acknowledgements-section {
+            padding: 100px 10%;
+            text-align: center;
+            margin-top: 60px;
+            color: #ccc;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* Custom style setting */
+        /* comparison style */
+        .video-group-full {
+        margin: 60px 0;
+        }
+        .video-group-full .group-title {
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #ffffff; /* title color */
+        }
+
+        /* fit the entire space */
+        .video-container-full {
+        width: 75% !important;
+        max-width: 75% !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        }
+        .full-video {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+        border-radius: 6px; /* setting */
+        }
+
+        /* content information */
+        .toc-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 40px 10%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+        }
+        .toc-section h3 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: left;
+            gap: 15px;
+        }
+        .toc-list li {
+            margin: 5px 0;
+        }
+        .toc-list a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .toc-list a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+
+</head>
+<body>
+    <section id="intro">
+        <!--teaser video here -->
+        <video autoplay muted loop id="background-video">
+            <source src="./assets/homie_video/0_page_video/demo.mp4" type="video/mp4">
+        </video>
+        <div class="content">
+            <div id="title-container">
+              <!-- <img id="title-icon" src="./assets/icon-new.png" alt="Icon"> -->
+              <h1 class="title-art"><strong>HOMIE</strong></h1>
+            </div>
+            <h2 class="title-art2">Human-object Centric Video Personalization via Multimodal Intelligent Enhancement</h2>
+            
+
+            <!-- Added the affiliations section -->
+            <div class="author-affiliation">
+                <p><span>Anonymous Submission</span></p>
+            </div>
+            
+        </div>
+
+    </section>
+
+
+    <div style="text-align:center; margin: 0px 0;">
+    <img 
+        src="./assets/homie_video/0_page_video/logo.png" 
+        alt="Logo"
+        style="width:35%; height:auto; display:inline-block;">
+    </div>
+
+
+    <section class="acknowledgements-section" style="max-width: 1200px; margin: 0 auto;">
+        <div style="
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+        ">
+                <h3 style="text-align: center; font-weight: bold; font-size: 1.8rem; margin-bottom: 1rem; color: white;">
+                    Abstract
+                </h3>
+                    <p style="font-size: 1.05rem; line-height: 1.6; color: white; text-align: left; text-indent: 2em;"></p>
+                        Human-object-centric video personalization (HOCVP) is a core task within subject-driven video generation. However, existing methods suffer from two key limitations. First, most approaches focusing on inter-subject personalization still struggle to strike a balance between high subject fidelity and accurate interaction patterns between humans and diverse objects, especially when objects represent abstract concepts such as logos. Second, while intra-subject references (e.g., OCR maps, multi-view inputs) are expected to enhance subject fidelity, most existing works lack mechanisms understand such latent correspondence. To address both challenges, we propose HOMIE, an HOCVP framework that tackles both inter- and intra-subject input settings in a unified manner. Compared to previous approaches, HOMIE proposes a better MLLM integration strategy to extract knowledge of reference level relationship without compromising the controllability of text encoders or incurring costly re-alignment. Specifically, we introduce global multimodal guidance within self-attention to better align MLLM-derived semantic features with VAE visual tokens. Furthermore, we propose modality-reference embedding to differentiate tokens from MLLM features and VAE tokens and associate intra-subject reference image tokens. Extensive experiments validate that our method achieves state-of-the-art performance across various HOCVP tasks. 
+                    </p>
+        </div>
+    </section>
+
+    <!-- add content -->
+    <section class="toc-section">
+        <h3>Contents</h3>
+        <ul class="toc-list">
+            <li><a href="#video_group_1">1. Demonstration Part 1: Inter-subject HOCVP of General Human-object Interaction</a></li>
+            <li><a href="#video_group_2">2. Demonstration Part 2: Inter-subject HOCVP (Logo Personalization with MLLM Reasoning)</a></li>
+            <li><a href="#video_group_3">3. Demonstration Part 3: Intra-subject HOCVP with Multi-view Consistency</a></li>
+            <li><a href="#video_group_4">4. Demonstration Part 4: Intra-subject HOCVP with High Text Fidelity Enhanced by OCR Maps</a></li>
+            <li><a href="#qualitative-comparison">5. Qualitative Comparison with Previous Video Personalization Methods</a></li>
+            <li><a href="#multi_ip">6. Demonstration of Practical Application</a></li>
+        </ul>
+        <div class="description", style="font-size: 1.2em;">
+            (Videos may take a few seconds to be completely loaded. Please feel free to reload the webpage if several videos are not shown.)
+        </div>
+    </section>
+
+    <section id="video_group_1">
+        <div class="title" style="text-align: center;font-family: 'Alegreya'; font-size: 2.0em;">
+          Demonstration Part 1: Inter-subject HOCVP of General Human-object Interaction 
+        </div>
+        <div class="description", style="font-size: 1.2em;">
+            HOMIE effectively handles complex inter-subject HOCVP scenarios, supporting general multi-human-object video personalization with high subject fidelity and strong text alignment. It demonstrates robust performance across diverse object categories and various interaction patterns. 
+        </div>
+        <div class="description", style="font-size: 1.2em; color:#d18585"> These videos correspond to Fig. 4, 8, 9, and 12 in our submission. </div>
+
+        
+        <div class="flex flex-dynamic">
+            <!-- Sample 1 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/12.mp4"></video>
+                <div class="prompt">A young man sits relaxed on a lush, soft grassland, playing an acoustic guitar gently. Beside him, a young woman sits comfortably, reading a book. The scene is set in a peaceful natural park with scattered trees, soft warm sunlight filtering through leaves, and a calm, cozy atmosphere. </div>
+            </div>
+            <!-- Sample 2 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/11.mp4"></video>
+                <div class="prompt">A young woman and a man sit comfortably on a soft brown leather sofa in a cozy, modern living room. Between them, the woman gently plays with a cute, fluffy cat, petting it softly as the cat relaxes. The background features warm indoor lighting, a clean coffee table, subtle home decor, and soft, calm ambient atmosphere. The scene has realistic textures, smooth natural motion, warm tones, and high-definition details. </div>
+            </div>
+            <!-- Sample 3 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/10.mp4"></video>
+                <div class="prompt">A man carrying a pink backpack stands and converses naturally with another man on a winding dirt path in a lush, sun‑dappled forest. Tall green trees with dense foliage surround the pathway, soft sunlight filters through the leaves, casting gentle shadows on the ground.</div>
+            </div>
+            <!-- Sample 4 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/7.mp4"></video>
+                <div class="prompt">A middle-to-close shot of an animate rabbit and fox walking in the street together. The rabbit is holding a white handbag in her hand casually.</div>
+            </div>
+            <!-- Sample 5 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/8.mp4"></video>
+                <div class="prompt">A young woman is holding an exquisite Japanese-style traditional toy, gently gesturing as she talks and interacts naturally with a man. They are sitting comfortably on a soft fabric sofa in a warm, cozy living room, with soft indoor lighting, subtle wooden furniture, and delicate decorative details in the background. The scene is calm and lifelike, with smooth character movements and realistic daily dynamics. </div>
+            </div>
+            <!-- Sample 6 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/9.mp4"></video>
+                <div class="prompt">In a bright, quiet modern library, a woman sits comfortably at a clean wooden desk and reading a book. On the desk beside her, there is a small, fresh green potted plant. Soft natural daylight illuminates the scene, with tall bookshelves and a calm, peaceful study atmosphere in the background. The video features smooth, realistic motion, high deail, and warm, soft lighting.</div>
+            </div>
+            <!-- Sample 7 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/6.mp4"></video>
+                <div class="prompt"> A woman wearing a stylish black shirt sits comfortably on a soft dark leather sofa, holding a cute cat gently in her arms. Beside the sofa stands a tall, lush green indoor plant that brings natural freshness and vitality to the room. The setting is a cozy, modern living room with warm ambient lighting, clean minimalist decor, and a calm, relaxed atmosphere. The scene features realistic textures, smooth subtle movements, and high-definition visual quality. </div>
+            </div>
+            <!-- Sample 8 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/2.mp4"></video>
+                <div class="prompt"> A man and a woman are sitting comfortably on a cozy leather sofa in a bright, warm living room, chatting actively and naturally with relaxed body language. Soft ambient light fills the room, with a clean, modern background including a subtle coffee table and gentle indoor decor. The scene features smooth, realistic movements, natural facial expressions, and a relaxed, friendly atmosphere, high detail, realistic texture, cinematic quality, stable video generation. </div>
+            </div>
+            <!-- Sample 9 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/3.mp4"></video>
+                <div class="prompt">A woman wearing a kimono is facing the camera and introducing a product of decorative doll figurine. She smiles warmly, holding the product gently as she presents it. The background features a cozy living room with a bright and professional atmosphere.</div>
+            </div>
+            <!-- Sample 10 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/4.mp4"></video>
+                <div class="prompt">A woman sits comfortably on a minimalist-style sofa in a bright, cozy living room, savoring a delicious donut. The space features clean lines, soft neutral tones, and gentle natural lighting, with simple decorative elements and a tidy, elegant atmosphere in the background. The scene is calm and realistic, with smooth, natural movements and high-definition details.</div>
+            </div>
+            <!-- Sample 11 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/5.mp4"></video>
+                <div class="prompt">A man in a baseball cap holds a protein powder container and introduces it to the camera. He stands in a bright gym with dumbbells, treadmills, and fitness posters in the background.</div>
+            </div>
+            <!-- Sample 12 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/1_multi/1.mp4"></video>
+                <div class="prompt">A man stands in a cozy, well-lit music studio, passionately playing a blue-colored guitar. Soft warm lighting illuminates the scene, with musical instruments, soundproof panels, and audio equipment neatly arranged in the background. The atmosphere is calm and artistic, with smooth, natural body movements, high realism, and soft cinematic texture.</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video_group_2">
+        <div class="title" style="text-align: center;font-family: 'Alegreya'; font-size: 2.0em;">
+          Demonstration Part 2: Inter-subject HOCVP (Logo Personalization with MLLM Reasoning)
+        </div>
+        <div class="description", style="font-size: 1.2em;">
+            HOMIE successfully handles additional inter-subject HOCVP scenarios, where abstract concepts such as logos are incorporated as reference inputs. Leveraging knowledge from MLLMs, HOMIE is able to attach logos to the most semantically relevant objects. Notably, these implicit semantic relationships are not explicitly described in the textual prompt.
+        </div>
+
+        <div class="description", style="font-size: 1.2em;color:#d18585">
+            These videos correspond to Fig. 4, 10 and 12 in our submission.
+        </div>
+        
+        <div class="flex flex-dynamic">
+            <!-- Sample 1 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/7.mp4"></video>
+                <div class="prompt">An elder man sits at his cluttered wooden desk in a bright, bustling office. He reaches for a disposable coffee cup and takes a slow sip.</div>
+            </div>
+            <!-- Sample 2 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/8.mp4"></video>
+                <div class="prompt">A young man is standing in a bright, bustling office. He is holding a disposable coffee cup and taking a slow sip.</div>
+            </div>
+            <!-- Sample 3 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/9.mp4"></video>
+                <div class="prompt">A young woman is facing the camera and introducing a chocolate product. She holds the chocolate bar in her hand, smiling as she explains its features. The background includes a white countertop and a few kitchen items, creating a warm and inviting atmosphere.</div>
+            </div>
+            <!-- Sample 4 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/5.mp4"></video>
+                <div class="prompt">A man is holding a bucket of French fries while walking in a fast-food restaurant towards the camera.</div>
+            </div>
+            <!-- Sample 5 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/2.mp4"></video>
+                <div class="prompt">A young man is standing in a clean and tidy kitchen, introducing a potato chip package. He holds the product in his hand, presenting it to the viewer with a slight smile. The background features open shelves, ceramic dishes, and soft under-cabinet lighting, creating a rustic and inviting atmosphere.</div>
+            </div>
+            <!-- Sample 6 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/3.mp4"></video>
+                <div class="prompt">A young man is facing the camera and introducing a box of milk product. He holds the product in his hand, smiling as he explains its features. The background includes a white countertop and a few kitchen items, creating a warm and inviting atmosphere.</div>
+            </div>
+            <!-- Sample 7 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/4.mp4"></video>
+                <div class="prompt">A woman is facing the camera and introducing a package of sweet candy. She holds the product, smiling as she presents it. The background features minimalist furniture and decorations, creating a bright and cozy atmosphere.</div>
+            </div>
+            <!-- Sample 8 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/1.mp4"></video>
+                <div class="prompt">A man wearing a grey long-sleeved hoodie is walking on a track on the playground.</div>
+            </div>
+            <!-- Sample 9 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/2_logo/6.mp4"></video>
+                <div class="prompt">A woman sits at her cluttered wooden desk in a bright, bustling office. She reaches for a disposable coffee cup and takes a slow, satisfying sip.</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video_group_3">
+        <div class="title" style="text-align: center;font-family: 'Alegreya'; font-size: 2.0em;">
+          Demonstration Part 3: Intra-subject HOCVP with Multi-view Consistency
+        </div>
+        <div class="description", style="font-size: 1.2em;">
+            HOMIE can also handle intra-subject HOCVP tasks given multiple reference images captured from different perspectives of the same object (inlcuding both human and objects). When the object or human undergoes motion (e.g., rotating) that reveals their various aspects, HOMIE is able to render these perspectives consistently and coherently.
+        </div>
+        <div class="description", style="font-size: 1.2em; color:#d18585">
+            These videos correspond to Fig. 5, 11 and 13 in our submission.
+        </div>
+        
+        <div class="flex flex-dynamic">
+            <!-- Sample 1 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/6.mp4"></video>
+                <div class="prompt">A man is sitting on a sofa facing the camera, holding an anime character figure and introducing it, while slowly rotating the figure to show its side; the scene is set in a warm, clean and cozy living room with soft lighting and minimalist home decor, medium close-up, bust shot, focusing on his upper body and the figure.</div>
+            </div>
+            <!-- Sample 2 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/8.mp4"></video>
+                <div class="prompt">A man is sitting at a desk facing the camera, holding a robot model and introducing it while slowly rotating the model to show its side. The background is a simple and tidy office with bright soft lighting, clean desks, modern minimalist furnishings and a calm working atmosphere.</div>
+            </div>
+            <!-- Sample 3 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/9.mp4"></video>
+                <div class="prompt">A middle shot of a woman sits at an office desk with a calm expression, holding a 3D-printed owl model about 15 centimeters tall. She introduces the model and slowly rotates it to clearly show its front and both sides. The office is equipped with various daily office supplies, desks and chairs, as well as a clean whiteboard, creating a neat and practical working space.</div>
+            </div>
+            <!-- Sample 4 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/2.mp4"></video>
+                <div class="prompt">A man sits at a desk with a calm smile, holding a 3D-printed monkey astronaut model around 20 centimeters tall as he introduces it. He slowly spins the model to showcase its front and both sides. The office is designed with modern decor, including sturdy wooden shelving units and well‑placed green plants, making the space bright and natural.</div>
+            </div>
+            <!-- Sample 5 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/1.mp4"></video>
+                <div class="prompt">A woman sits on a double sofa in the living room with a warm smile, holding a 3D-printed fox model that is about 10 centimeters tall. She introduces the model gently and slowly rotates it to show its front and both sides clearly. The living room is furnished with modern furniture and decorated in a cozy style, with soft lighting and neat layouts enhancing the warm atmosphere.</div>
+            </div>
+            <!-- Sample 6 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/3.mp4"></video>
+                <div class="prompt">A young man sits at a desk in his personal study, holding a blue-colored robot model. He explains the model while slowly rotating it to present its front and both sides. The room is styled as a youthful workshop, with well-organized bookshelves and artistic posters hanging on the wall, full of personality and energy.</div>
+            </div>
+            <!-- Sample 10 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/10.mp4"></video>
+                <div class="prompt">A lady in ethnic folk white top and red pants stands facing the lens and smiling softly. She has a cute dog-patterned backpack on her back. Moments later, she turns around to show her back and present the backpack completely. The scene is set on an open lawn with a quaint wooden house in the quiet natural background.</div>
+            </div>
+            <!-- Sample 11 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/11.mp4"></video>
+                <div class="prompt">A young man in casual top and sunglasses stands with his back to the camera, then quickly turns around to face the lens. He holds a brown teddy bear doll in his hands and begins introducing the doll. The background is a cozy, minimalist living room with warm ambient lighting and simple home decor.</div>
+            </div>
+            <!-- Sample 12 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/12.mp4"></video>
+                <div class="prompt">A man in a dark blue suit walks from the right side of the frame to the center, then stops and faces the camera. He holds a brown rabbit plush toy in his hands and starts introducing the toy. The background is a warm, cozy and minimalist living room with elegant simple furnishings and soft ambient light.</div>
+            </div>
+            <!-- Sample 7 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/4.mp4"></video>
+                <div class="prompt">A woman is facing the camera, holding a radio with both hands and introducing it while showing its different sides; the background is a clean and tidy office with bright lighting, desks, office supplies and a neat modern working environment, and the shot is a medium close-up focusing on her upper body to highlight the object in her hands.</div>
+            </div>
+            <!-- Sample 8 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/7.mp4"></video>
+                <div class="prompt">A man is sitting on a sofa facing the camera, holding an ancient‑style clay cup and taking a sip from it, with a medium close‑up and bust shot focusing on his upper body and the cup; the scene is set in a warm and cozy living room with soft lighting, simple and elegant furniture, and clean and tidy surroundings, creating a quiet and comfortable home atmosphere.</div>
+            </div>
+            <!-- Sample 9 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/4_multiview/5.mp4"></video>
+                <div class="prompt">A man walks on a 19th-century-style train station platform facing the camera, carrying a vintage antique suitcase in his hand; the background features classic retro station architecture, old-fashioned signs, warm soft lighting, and a nostalgic historical atmosphere.</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video_group_4">
+        <div class="title" style="text-align: center;font-family: 'Alegreya'; font-size: 2.0em;">
+          Demonstration Part 4: Intra-subject HOCVP with High Text Fidelity Enhanced by OCR Maps
+        </div>
+        <div class="description", style="font-size: 1.2em;">
+            HOMIE effectively addresses intra-subject HOCVP tasks in which reference images with rich textual regions are paired with their corresponding OCR maps. The generation results produced by HOMIE exhibit high textual fidelity, demonstrating its great potential for real-world practical applications. 
+        </div>
+        <div class="description", style="font-size: 1.2em; color:#d18585">
+            These videos correspond to Fig. 5, 11 and 13 in our submission.
+        </div>
+        
+        <div class="flex flex-dynamic">
+            <!-- Sample 1 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/8.mp4"></video>
+                <div class="prompt">A woman is facing the camera, holding a baby-care soap, and introducing it. She smiles gently and explains its features. The background features a bathroom with a clawfoot tub, vintage mirror and woven basket, charming and tranquil.</div>
+            </div>
+            <!-- Sample 2 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/9.mp4"></video>
+                <div class="prompt">A man is facing the camera and introducing a chocolate bar. He smiles warmly, holding the product. The background features a kitchen with rustic wooden cabinets, a brick backsplash, and cast-iron cookware, cozy and vintage.</div>
+            </div>
+            <!-- Sample 3 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/1.mp4"></video>
+                <div class="prompt">A man is facing the camera and introducing a tube of tire repair adhesive. He holds the product, presenting it to the viewer with a calm and professional demeanor. The background features a slim desk, a notebook and a small bookshelf, creating a tidy and efficient atmosphere.</div>
+            </div>
+            <!-- Sample 4 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/2.mp4"></video>
+                <div class="prompt">A man is facing the camera and introducing a chocolate bar product. He holds the product with his hand, presenting it to the viewer eagerly. The background features a living room with a gray fabric sofa, striped rug and built-in fireplace, warm and welcoming.</div>
+            </div>
+            <!-- Sample 5 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/3.mp4"></video>
+                <div class="prompt">A young woman is facing the camera and introducing a product of instant noodles. She holds the product and prepares to enjoy it with chopsticks. The background features open shelves, glass jars and potted chives, creating a down-to-earth and inviting atmosphere.</div>
+            </div>
+            <!-- Sample 6 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/4.mp4"></video>
+                <div class="prompt">A muscular man is facing the camera and introducing a black container of protein powder eagerly. He holds the product, looking directly at the viewer. The background features a gym with lots of people exercising.</div>
+            </div>
+            <!-- Sample 7 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/5.mp4"></video>
+                <div class="prompt">A young woman is facing the camera and holding a box of children's high-protein milk. She smiles gently and introduces the product. The background features a small vanity, woven baskets and muted bed linens, creating a heartfelt and relaxing atmosphere.</div>
+            </div>
+            <!-- Sample 8 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/6.mp4"></video>
+                <div class="prompt">A young woman is facing the camera and introducing a red packaged product. She holds the package, smiles, and gestures towards it. The background features a kitchen with wooden cabinets, stainless steel appliances and a breakfast bar, warm and functional.</div>
+            </div>
+            <!-- Sample 9 -->
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/1_gallery/3_text/7.mp4"></video>
+                <div class="prompt"> A man is facing the camera and introducing a product of potato chips. He smiles happily, holding the product. The background features a living room with a gray linen sofa, striped rug and trailing pothos, calm and stylish.</div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <section id="qualitative-comparison">
+        <div class="video-group-full">
+            <div class="title" style="text-align: center;font-family: 'Alegreya'; font-size: 2.0em;">
+            Qualitative Comparison with Previous SOTA methods
+            </div>
+            <div class="description", style="font-size: 1.2em;">
+                We present qualitative video comparisons between HOMIE and existing baseline methods. These video samples are provided as supplementary materials to complement the qualitative evaluation results discussed in the main paper, covering a diverse set of HOCVP scenarios.
+            </div>
+            <!-- Sample 1 -->
+            <div class="video-container-full">
+                <video class="full-video" controls muted loop playsinline>
+                <source src="./assets/homie_video/2_comparison_results/multiple_results.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-caption-text" style="text-align:center; margin-top:0; margin-bottom:16px; font-size:14px; color:#ffffff;">
+                Qualitative comparison on general inter-subject HOCVP 
+            </div>
+
+            <!-- Sample 2 -->
+            <div class="video-container-full">
+                <video class="full-video" controls muted loop playsinline>
+                <source src="./assets/homie_video/2_comparison_results/logo_results.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-caption-text" style="text-align:center; margin-top:0; margin-bottom:16px; font-size:14px; color:#ffffff;">
+                Qualitative comparison on inter-subject HOCVP with MLLM reasoning (logo personalization). We include methods that also integrate MLLMs in their models. (SkyReels-A2, BindWeave, UniVideo, VINO)
+            </div>
+
+            <!-- Sample 3 -->
+            <div class="video-container-full">
+                <video class="full-video" controls muted loop playsinline>
+                <source src="./assets/homie_video/2_comparison_results/multiview_results.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-caption-text" style="text-align:center; margin-top:0; margin-bottom:16px; font-size:14px; color:#ffffff;">
+                Qualitative comparison on HOCVP with intra-subject inputs of multi-view references
+            </div>
+
+            <!-- Sample 4 -->
+            <div class="video-container-full">
+                <video class="full-video" controls muted loop playsinline>
+                <source src="./assets/homie_video/2_comparison_results/ocr_results.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-caption-text" style="text-align:center; margin-top:0; margin-bottom:16px; font-size:14px; color:#ffffff;">
+                Qualitative comparison on HOCVP with intra-subject inputs of OCR maps
+            </div>
+        </div>
+    </section>
+
+
+    <section id="multi_ip">
+        <div class="title" style="text-align: center;font-family: 'Alegreya'; font-size: 2.0em;">
+            Practical Application (e.g, livestream product promoting with 1280 x 720 resolution)
+        </div>
+
+        <div class="description">
+            <strong>HoCo</strong> enables HOC video personalization with vertical high resolution, which is well-suited for a variety of practical applications including live-stream product promotion and creative content generation.
+        </div>
+
+    <style>
+        #multi_ip .flex-dynamic {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /*  */
+            justify-content: flex-start;
+            padding: 0 5px;
+        }
+        #multi_ip .full-screen-wrap {
+            aspect-ratio: 9 / 16; /*  */
+            /*  */
+            width: calc(25% - 7.5px); 
+            flex-shrink: 0;
+            overflow: hidden;
+            border-radius: 4px;
+            position: relative;
+            margin-top: 2.5px;
+            margin-bottom: 2.5px;
+        }
+        /* */
+        #multi_ip .full-screen-wrap video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /*  */
+            display: none;
+            background-color: #000;
+            aspect-ratio: unset; /* */
+        }
+        #multi_ip .loading-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 1000px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            color: rgba(255,255,255,0.6);
+            font-size: 48px;
+            z-index: 10; /*  */
+        }
+        #multi_ip .loading-text {
+            font-size: 24px;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        #multi_ip .loading-icon {
+            font-size: 48px;
+        }
+        #multi_ip .prompt {
+            max-width: calc(100% - 20px);
+            position: absolute;
+            background: rgba(0,0,0,0.5);
+            color: rgba(255,255,255,0.9);
+            font-size: 10px;
+            backdrop-filter: blur(10px);
+            bottom: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            box-sizing: border-box;
+        }
+        #multi_ip .prompt-wrap:hover .prompt {
+            opacity: 1;
+            pointer-events: all;
+        }
+        /*  */
+        @media (max-width: 768px) {
+            #multi_ip .full-screen-wrap {
+                width: calc(50% - 5px); /*  */
+            }
+        }
+        @media (max-width: 512px) {
+            #multi_ip .full-screen-wrap {
+                width: 100%; /*  */
+            }
+        }
+    </style>
+
+        <div class="flex flex-dynamic">
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/3.mp4"></video>
+                <div class="prompt">A man wearing a clean green T-shirt gently hands a sleek protein container product to another man in a bright, modern kitchen. The kitchen has clean white cabinetry, stainless steel appliances, a marble countertop, and soft natural daylight coming through a window, creating a warm, realistic, and high-definition indoor scene. Smooth, natural, and realistic human movements, high video quality, sharp details, stable composition, professional lighting.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/6.mp4"></video>
+                <div class="prompt">A blue-skinned Na'vi woman and a man wearing a dark-blue shirt sit comfortably on a soft leather sofa, engaged in calm, natural conversation. The background features a warm, modern interior with soft ambient lighting, minimalist decor, and a relaxed, cozy atmosphere. Smooth, realistic character movements, high detail, cinematic lighting, stable composition, lifelike facial expressions and natural body language.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/12.mp4"></video>
+            <div class="prompt">A man wearing a cowboy hat, holding a water bottle and smiling warmly at the camera. He stands in a classic American Western-style town with wooden storefronts, saloon signs, and dirt roads.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/5.mp4"></video>
+            <div class="prompt">A young woman is facing the camera and introducing a jar of herbal powder and gently placing it on a table. Next to the jar are a ceramic cup and a small spoon. The background features tatami mats, shoji screens and a bamboo tea set..</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/1.mp4"></video>
+                <div class="prompt">A young man is standing in a clean and tidy kitchen, introducing potato chip package. He holds the product in his hand, presenting it to the viewer with a slight smile. The background features open shelves, ceramic dishes and soft under-cabinet lighting, creating a rustic and inviting atmosphere.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/2.mp4"></video>
+                <div class="prompt">A man is sitting in a fast-food restaurant, facing the camera and holding a bucket of fried chicken. He introduces the fried chicken with a gentle smile.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+                <div class="loading-placeholder">
+                    <div class="loading-text">Loading...</div>
+                    <div class="loading-icon">&#9749</div>
+                </div>
+                <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/4.mp4"></video>
+                <div class="prompt">A man is facing the camera and placing a bag of dog food gently on the table and introducing the product. The background is a cozy indoor space with a soft carpet, a lovely dog, creating a warm and pet-loving atmosphere.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/8.mp4"></video>
+            <div class="prompt">A woman is facing the camera and introducing a bottle of sake. She holds the bottle, smiles, and gestures towards it. The background features a Japanese tea room with low tables, sliding doors and potted moss, serene and refined.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/7.mp4"></video>
+            <div class="prompt">A young lady wearing a white pleated skirt stands facing the lens, puts a cute animal plush doll down on the desktop with both hands. After that, she turns her back to the camera and walks off slowly. The setting is a clean minimalist office with soft indoor lighting.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/9.mp4"></video>
+            <div class="prompt">An animated boy with blue hair is standing, introducing a yellow alarm clock. He holds it up, smiling. The background features a basic bed, curtains and potted peace lily, creating a bright and calm atmosphere.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/10.mp4"></video>
+            <div class="prompt">An animate fox is facing the camera and holding a pink backpack. The fox presents the backpack with a gentle smile. The background features an office with a wooden desk, desk lamp, creating a focused productive atmosphere.</div>
+            </div>
+
+            <div class="prompt-wrap full-screen-wrap" style="position: relative;">
+            <div class="loading-placeholder">
+                <div class="loading-text">Loading...</div>
+                <div class="loading-icon">&#9749</div>
+            </div>
+            <video autoplay playsinline muted loop onloadeddata="this.style.display='block'; this.previousElementSibling.style.display='none';" src="./assets/homie_video/practical_application/11.mp4"></video>
+            <div class="prompt">A 3D-figure in a red and silver uniform is facing the camera and introducing a black motorcycle helmet. He holds the helmet, presenting it to the viewer. The background is a sci-fi-style commanding room with a large monitor screen.</div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Clone the items to show neighbors in the carousel
+            $('.carousel-item', '.show-neighbors').each(function () {
+                var next = $(this).next();
+                if (!next.length) {
+                    next = $(this).siblings(':first');
+                }
+                next.children(':first-child').clone().appendTo($(this));
+            }).each(function () {
+                var prev = $(this).prev();
+                if (!prev.length) {
+                    prev = $(this).siblings(':last');
+                }
+                prev.children(':nth-last-child(2)').clone().prependTo($(this));
+            });
+
+            function playActiveVideo() {
+                // Stop all videos
+                $('.carousel-video').each(function () {
+                    this.pause();
+                });
+                
+                // Find the active carousel item (the middle one) and play its video
+                var activeVideo = $('#carouselExampleCaptions .carousel-item.active .video-wrapper video.carousel-video').get(0);
+
+                // Play the video only if it exists
+                if (activeVideo) {
+                    activeVideo.play();
+                }
+            }
+
+            // On slide event, pause all videos
+            $('#carouselExampleCaptions').on('slide.bs.carousel', function () {
+                $('.carousel-video').each(function () {
+                    this.pause();
+                });
+            });
+
+            // On slid event, play the active video
+            $('#carouselExampleCaptions').on('slid.bs.carousel', function () {
+                playActiveVideo();
+            });
+
+            // Play the active video on page load
+            playActiveVideo();
+        });
+    </script>
+
+</body>
+
+
+</html>
